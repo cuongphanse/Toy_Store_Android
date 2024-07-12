@@ -1,14 +1,18 @@
 package com.example.toy_store;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -16,6 +20,7 @@ import com.bumptech.glide.Glide;
 import com.example.toy_store.model.Product;
 import com.example.toy_store.repository.CartRepository;
 import com.example.toy_store.service.CartService;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -25,7 +30,7 @@ import retrofit2.Response;
 
 public class ProductDetailsActivity extends AppCompatActivity {
 
-    private ImageView imgProduct;
+    private ImageView imgProduct,imgBack;
     private TextView tvProductName, tvProductBrand, tvProductPrice, tvProductDescription, tvProductId, tvQuantity;
     private Button btnDecreaseQuantity, btnIncreaseQuantity, btnAddToCart;
     private int quantity = 1;
@@ -37,6 +42,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_product_details);
 
         imgProduct = findViewById(R.id.img_product);
+        imgBack = findViewById(R.id.img_back);
         tvProductName = findViewById(R.id.tv_product_name);
         tvProductBrand = findViewById(R.id.tv_product_brand);
         tvProductPrice = findViewById(R.id.tv_product_price);
@@ -47,6 +53,38 @@ public class ProductDetailsActivity extends AppCompatActivity {
         btnIncreaseQuantity = findViewById(R.id.btn_increase_quantity);
         btnAddToCart = findViewById(R.id.btn_add_to_cart);
 
+        imgBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ProductDetailsActivity.this, ShopActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
+
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
+        bottomNavigationView.setSelectedItemId(R.id.menu_home);
+        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                int id = menuItem.getItemId();
+                if (id == R.id.menu_cart) {
+                    startActivity(new Intent(getApplicationContext(), CartActivity.class));
+                    overridePendingTransition(0, 0);
+                    return true;
+                }
+                if (id == R.id.menu_person) {
+                    startActivity(new Intent(getApplicationContext(), ProfileActivity.class));
+                    overridePendingTransition(0, 0);
+                    return true;
+                }
+                if (id == R.id.menu_home) {
+                    return true; // Stay on the current activity
+                }
+                return false; // Return false for other unhandled cases
+            }
+        });
+
         // Retrieve userId from shared preferences
         SharedPreferences sharedPref = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
         userId = sharedPref.getString("userId", null);
@@ -56,8 +94,8 @@ public class ProductDetailsActivity extends AppCompatActivity {
         int productId = getIntent().getIntExtra("product_id", -1);
 
         if (product != null) {
-            tvProductName.setText(product.getName());
-            tvProductBrand.setText(product.getDescription()); // Assuming description is used for brand
+            tvProductName.setText("Name: " + product.getName());
+            tvProductBrand.setText("Stock: " + product.getStockQuantity()); // Assuming description is used for brand
             tvProductPrice.setText("$" + product.getPrice());
             tvProductDescription.setText(product.getDescription());
             Glide.with(this).load(product.getUrlImage()).into(imgProduct);

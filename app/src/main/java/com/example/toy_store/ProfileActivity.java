@@ -4,11 +4,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class ProfileActivity extends AppCompatActivity {
 
@@ -18,6 +22,29 @@ public class ProfileActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
+
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
+        bottomNavigationView.setSelectedItemId(R.id.menu_person);
+        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                int id = menuItem.getItemId();
+                if (id == R.id.menu_cart) {
+                    startActivity(new Intent(getApplicationContext(), CartActivity.class));
+                    overridePendingTransition(0, 0);
+                    return true;
+                }
+                if (id == R.id.menu_person) {
+                    return true;
+                }
+                if (id == R.id.menu_home) {
+                    startActivity(new Intent(getApplicationContext(), ShopActivity.class));
+                    overridePendingTransition(0, 0);
+                    return true;
+                }
+                return false; // Return false for other unhandled cases
+            }
+        });
 
         tvLogout = findViewById(R.id.tv_logout);
         tvInfo = findViewById(R.id.tv_info);

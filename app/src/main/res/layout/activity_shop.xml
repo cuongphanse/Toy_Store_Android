@@ -1,15 +1,47 @@
-<?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ProductListActivity">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".ShopActivity">
+    <androidx.appcompat.widget.SearchView
+        android:id="@+id/searchview"
+        android:padding="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/search_view"
+        app:queryHint="Search Here ...."
+        app:iconifiedByDefault="false"/>
+    <ImageView
+        android:id="@+id/img_banner"
+        android:layout_width="match_parent"
+        android:layout_height="145dp"
+        android:layout_below="@id/searchview"
+        android:src="@drawable/toyshop"/>
+
+    <TextView
+        android:id="@+id/tv_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Products"
+        android:textSize="25dp"
+        android:layout_below="@id/img_banner"
+        android:padding="10dp"
+        android:textStyle="bold"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view_products"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_below="@id/tv_name"
         android:padding="8dp"
         android:clipToPadding="false"
         android:scrollbars="vertical" />
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottom_navigation"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:layout_alignParentBottom="true"
+        app:menu="@menu/bottom_nav_menu"/>
 </RelativeLayout>

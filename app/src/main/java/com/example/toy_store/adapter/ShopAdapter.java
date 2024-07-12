@@ -22,6 +22,10 @@ public class ShopAdapter extends RecyclerView.Adapter<ShopAdapter.ProductViewHol
 
     private Context context;
     private List<Product> productList;
+    public void setFilterProduct(List<Product> filterProduct){
+        this.productList = filterProduct;
+        notifyDataSetChanged();
+    }
 
     public ShopAdapter(Context context, List<Product> productList) {
         this.context = context;

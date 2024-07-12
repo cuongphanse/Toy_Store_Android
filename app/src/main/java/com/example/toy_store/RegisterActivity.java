@@ -73,7 +73,16 @@ public class RegisterActivity extends AppCompatActivity {
         String phone = etPhone.getText().toString().trim();
         boolean isAdmin = false; // isAdmin luôn là false
 
-        // Validate input fields if needed
+        // Validate input fields
+        if (!validatePassword(password)) {
+            Toast.makeText(this, "Password must be at least 8 characters long, contain an uppercase letter, and a special character.", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        if (!validateBirthday(birthday)) {
+            Toast.makeText(this, "Birthday must be in the format YYYY-MM-DD.", Toast.LENGTH_LONG).show();
+            return;
+        }
 
         RegisterRequest registerRequest = new RegisterRequest(firstName, lastName, email, userName, password, address, birthday, phone, isAdmin);
 
@@ -102,4 +111,15 @@ public class RegisterActivity extends AppCompatActivity {
             }
         });
     }
+
+    private boolean validatePassword(String password) {
+        String passwordPattern = "^(?=.*[A-Z])(?=.*[!@#$&*]).{8,}$";
+        return password.matches(passwordPattern);
+    }
+
+    private boolean validateBirthday(String birthday) {
+        String birthdayPattern = "^\\d{4}-\\d{2}-\\d{2}$";
+        return birthday.matches(birthdayPattern);
+    }
+
 }
