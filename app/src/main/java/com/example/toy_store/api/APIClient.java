@@ -8,7 +8,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class APIClient {
-    private static String baseURL = "https://d4c2-118-69-182-149.ngrok-free.app/api/";
+    private static String baseURL = "https://b964-171-243-48-31.ngrok-free.app/api/";
     private static Retrofit retrofit;
     //change git
 
@@ -17,7 +17,7 @@ public class APIClient {
             retrofit = new Retrofit.Builder()
                     .baseUrl(baseURL)
                     .addConverterFactory(GsonConverterFactory.create())
-                    .client(client)  // Set the custom OkHttpClient here
+                    .client(client)
                     .build();
         }
         return retrofit;

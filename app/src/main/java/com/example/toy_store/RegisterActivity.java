@@ -1,10 +1,12 @@
 package com.example.toy_store;
 
+import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -16,6 +18,8 @@ import com.example.toy_store.model.RegisterRequest;
 import com.example.toy_store.api.APIClient;
 import com.example.toy_store.repository.UserRepository;
 import com.example.toy_store.service.UserService;
+
+import java.util.Calendar;
 
 import okhttp3.OkHttpClient;
 import retrofit2.Call;
@@ -45,6 +49,12 @@ public class RegisterActivity extends AppCompatActivity {
         etPhone = findViewById(R.id.etPhone);
         btnRegister = findViewById(R.id.btnRegister);
         btnChangeLogin = findViewById(R.id.tv_changeLogin);
+        etBirthday.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDatePickerDialog();
+            }
+        });
 
         btnChangeLogin.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -71,7 +81,7 @@ public class RegisterActivity extends AppCompatActivity {
         String address = etAddress.getText().toString().trim();
         String birthday = etBirthday.getText().toString().trim();
         String phone = etPhone.getText().toString().trim();
-        boolean isAdmin = false; // isAdmin luôn là false
+        boolean isAdmin = false;
 
         // Validate input fields
         if (!validatePassword(password)) {
@@ -79,10 +89,6 @@ public class RegisterActivity extends AppCompatActivity {
             return;
         }
 
-        if (!validateBirthday(birthday)) {
-            Toast.makeText(this, "Birthday must be in the format YYYY-MM-DD.", Toast.LENGTH_LONG).show();
-            return;
-        }
 
         RegisterRequest registerRequest = new RegisterRequest(firstName, lastName, email, userName, password, address, birthday, phone, isAdmin);
 
@@ -116,10 +122,26 @@ public class RegisterActivity extends AppCompatActivity {
         String passwordPattern = "^(?=.*[A-Z])(?=.*[!@#$&*]).{8,}$";
         return password.matches(passwordPattern);
     }
+    private void showDatePickerDialog() {
+        final Calendar calendar = Calendar.getInstance();
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH);
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
 
-    private boolean validateBirthday(String birthday) {
-        String birthdayPattern = "^\\d{4}-\\d{2}-\\d{2}$";
-        return birthday.matches(birthdayPattern);
+        DatePickerDialog datePickerDialog = new DatePickerDialog(
+                RegisterActivity.this,
+                new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                        // Format the date as needed (e.g., YYYY-MM-DD)
+                        String selectedDate = String.format("%04d-%02d-%02d", year, month + 1, dayOfMonth);
+                        etBirthday.setText(selectedDate);
+                    }
+                },
+                year, month, day);
+
+        datePickerDialog.show();
     }
+
 
 }

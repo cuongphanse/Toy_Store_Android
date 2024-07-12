@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/menu_product"
+        android:title="Products"
+        android:icon="@drawable/baseline_smart_toy_24"/>
+
+    <item
+        android:id="@+id/menu_user"
+        android:title="Users"
+        android:icon="@drawable/baseline_person_24"/>
+
+    <item
+        android:id="@+id/menu_setting"
+        android:title="Setting"
+        android:icon="@drawable/baseline_settings_24"/>
+
+</menu>

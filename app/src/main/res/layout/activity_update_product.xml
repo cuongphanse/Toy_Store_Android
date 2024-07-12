@@ -75,6 +75,7 @@
             android:id="@+id/btn_change_image"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:backgroundTint="@color/green_light"
             android:text="Change Image"
             android:layout_gravity="center"
             android:paddingTop="10dp"/>
@@ -90,12 +91,14 @@
                 android:id="@+id/btn_update_product"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:backgroundTint="@color/green_light"
                 android:text="Update" />
 
             <Button
                 android:id="@+id/btn_cancel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:backgroundTint="@color/green_light"
                 android:text="Cancel" />
         </LinearLayout>
     </LinearLayout>

@@ -78,7 +78,7 @@ public class LoginActivity extends AppCompatActivity {
                     LoginResponse loginResponse = response.body();
                     saveUserId(loginResponse.getUserId());
                     if (loginResponse.isAdmin()) {
-                        Intent intent = new Intent(LoginActivity.this, UserActivity.class);
+                        Intent intent = new Intent(LoginActivity.this, ProductListActivity.class);
                         startActivity(intent);
                     } else {
                         Intent intent = new Intent(LoginActivity.this, ShopActivity.class);
