@@ -8,7 +8,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class APIClient {
-    private static String baseURL = "https://d4c2-118-69-182-149.ngrok-free.app/api/";
+    public static String baseURL = "https://6475-116-110-41-94.ngrok-free.app/api/";
     private static Retrofit retrofit;
     //change git
 
