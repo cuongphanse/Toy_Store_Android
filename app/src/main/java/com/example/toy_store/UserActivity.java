@@ -84,7 +84,7 @@ public class UserActivity extends AppCompatActivity {
                     User[] users = response.body();
                     if (users != null) {
                         List<User> userList = Arrays.asList(users);
-                        userAdapter = new UserAdapter(userList);
+                        userAdapter = new UserAdapter(UserActivity.this,userList);
                         rcvUsers.setAdapter(userAdapter);
                     } else {
                         Toast.makeText(UserActivity.this, "No users found", Toast.LENGTH_SHORT).show();
