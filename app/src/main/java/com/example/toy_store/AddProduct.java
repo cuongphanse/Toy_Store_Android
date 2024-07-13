@@ -5,17 +5,20 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.toy_store.repository.ProductRepository;
 import com.example.toy_store.service.ProductService;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -34,14 +37,14 @@ public class AddProduct extends AppCompatActivity {
     private Uri imageUri;
 
     private EditText etName, etDescription, etPrice, etStockQuantity;
-    private ImageView imgProduct;
+    private ImageView imgProduct,btnBack;
     private Button btnSelectImage, btnAddProduct;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_product);
-
+        btnBack = findViewById(R.id.img_backap);
         etName = findViewById(R.id.et_nameProduct);
         etDescription = findViewById(R.id.et_descriptionProduct);
         etPrice = findViewById(R.id.et_priceProduct);
@@ -50,6 +53,38 @@ public class AddProduct extends AppCompatActivity {
         btnSelectImage = findViewById(R.id.btn_select_image);
         btnAddProduct = findViewById(R.id.btn_add_product);
 
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation1);
+        bottomNavigationView.setSelectedItemId(R.id.menu_product);
+        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                int id = menuItem.getItemId();
+                if (id == R.id.menu_product) {
+//                    startActivity(new Intent(getApplicationContext(), ProductListActivity.class));
+//                    overridePendingTransition(0, 0);
+                    return true;
+                }
+                if (id == R.id.menu_user) {
+                    startActivity(new Intent(getApplicationContext(), UserActivity.class));
+                    overridePendingTransition(0, 0);
+                    return true;
+                }
+                if (id == R.id.menu_setting) {
+                    startActivity(new Intent(getApplicationContext(), SettingActivity.class));
+                    overridePendingTransition(0, 0);
+                    return true; // Stay on the current activity
+                }
+                return false; // Return false for other unhandled cases
+            }
+        });
+        btnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(AddProduct.this,ProductListActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
         btnSelectImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

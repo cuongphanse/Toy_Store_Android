@@ -1,7 +1,5 @@
 package com.example.toy_store.api;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
@@ -17,7 +15,7 @@ public class APIClient {
             retrofit = new Retrofit.Builder()
                     .baseUrl(baseURL)
                     .addConverterFactory(GsonConverterFactory.create())
-                    .client(client)  // Set the custom OkHttpClient here
+                    .client(client)
                     .build();
         }
         return retrofit;

@@ -1,9 +1,12 @@
 package com.example.toy_store;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -13,6 +16,7 @@ import com.example.toy_store.adapter.UserAdapter;
 import com.example.toy_store.model.User;
 import com.example.toy_store.repository.UserRepository;
 import com.example.toy_store.service.UserService;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.Arrays;
 import java.util.List;
@@ -42,6 +46,30 @@ public class UserActivity extends AppCompatActivity {
 
         OkHttpClient client = new OkHttpClient(); // Create your OkHttpClient instance
         userService = UserRepository.getUserService(client);
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation1);
+        bottomNavigationView.setSelectedItemId(R.id.menu_user);
+        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                int id = menuItem.getItemId();
+                if (id == R.id.menu_product) {
+                    startActivity(new Intent(getApplicationContext(), ProductListActivity.class));
+                    overridePendingTransition(0, 0);
+                    return true;
+                }
+                if (id == R.id.menu_user) {
+//                    startActivity(new Intent(getApplicationContext(), UserActivity.class));
+//                    overridePendingTransition(0, 0);
+                    return true;
+                }
+                if (id == R.id.menu_setting) {
+                    startActivity(new Intent(getApplicationContext(), SettingActivity.class));
+                    overridePendingTransition(0, 0);
+                    return true; // Stay on the current activity
+                }
+                return false; // Return false for other unhandled cases
+            }
+        });
 
         // Call API method to fetch users
         getAllUsersFromApi();
@@ -56,7 +84,7 @@ public class UserActivity extends AppCompatActivity {
                     User[] users = response.body();
                     if (users != null) {
                         List<User> userList = Arrays.asList(users);
-                        userAdapter = new UserAdapter(userList);
+                        userAdapter = new UserAdapter(UserActivity.this,userList);
                         rcvUsers.setAdapter(userAdapter);
                     } else {
                         Toast.makeText(UserActivity.this, "No users found", Toast.LENGTH_SHORT).show();
