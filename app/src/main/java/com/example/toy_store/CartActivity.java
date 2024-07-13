@@ -3,7 +3,9 @@ package com.example.toy_store;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.TextView;
@@ -16,6 +18,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.toy_store.adapter.CartAdapter;
+import com.example.toy_store.data.api.RetrofitClient;
+import com.example.toy_store.data.model.PaymentResponse;
+import com.example.toy_store.data.repository.PaymentRepository;
 import com.example.toy_store.model.Cart;
 import com.example.toy_store.repository.CartRepository;
 import com.example.toy_store.service.CartService;
@@ -37,7 +42,7 @@ public class CartActivity extends AppCompatActivity implements CartAdapter.CartA
     private Button btnCheckout;
     private TextView totalMoney;
     private CartService cartService;
-
+    private double totalAmount = 0;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -118,20 +123,73 @@ public class CartActivity extends AppCompatActivity implements CartAdapter.CartA
     }
 
     private void updateTotalMoney(List<Cart> cartList) {
-        double total = 0;
+        totalAmount = 0;  // Reset total amount
         for (Cart cart : cartList) {
-            total += cart.getPrice() * cart.getQuantity();
+            totalAmount += cart.getPrice() * cart.getQuantity();
         }
-        totalMoney.setText(String.format("$%.2f", total));
+        totalMoney.setText(String.format("$%.2f", totalAmount));
     }
 
     private void checkout() {
-        Toast.makeText(this, "Checkout process started...", Toast.LENGTH_SHORT).show();
-        // Integrate checkout logic according to your business requirements.
+        SharedPreferences sharedPref = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+        String userId = sharedPref.getString("userId", null);
+        if (userId == null) {
+            Toast.makeText(this, "User ID not found. Please log in.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        Call<Integer> call = RetrofitClient.getApiService().checkout(userId);
+        call.enqueue(new Callback<Integer>() {
+            @Override
+            public void onResponse(Call<Integer> call, Response<Integer> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    int orderId = response.body();
+                    Toast.makeText(CartActivity.this, "Order successful. Order ID: " + orderId, Toast.LENGTH_LONG).show();
+
+                    // Assuming you want to initiate a payment process after checkout
+                    createPayment( (float)totalAmount, String.valueOf(orderId), "vn");
+
+                    // Clear the cart items in the UI
+                    recyclerView.setAdapter(null);
+                    totalMoney.setText("$0.00");
+                } else {
+                    Toast.makeText(CartActivity.this, "Checkout failed.", Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Integer> call, Throwable t) {
+                Toast.makeText(CartActivity.this, "An error occurred: " + t.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     @Override
     public void onCartDataChanged() {
         loadCartItems();
     }
+    private void createPayment(float amount, String orderid, String locale) {
+        PaymentRepository paymentRepository = new PaymentRepository(RetrofitClient.getPaymentApiService());
+        paymentRepository.createPayment(amount, orderid, locale, new Callback<PaymentResponse>() {
+            @Override
+            public void onResponse(Call<PaymentResponse> call, Response<PaymentResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    String paymentUrl = response.body().getPaymentUrl();
+                    openBrowserInApp(paymentUrl);
+                } else {
+                    Log.e("Payment", "Response unsuccessful or body is null");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<PaymentResponse> call, Throwable t) {
+                Log.e("Payment", "Failed to create payment", t);
+            }
+        });
+    }
+    private void openBrowserInApp(String url) {
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+        startActivity(intent);
+    }
+
 }
